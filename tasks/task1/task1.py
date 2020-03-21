@@ -30,32 +30,17 @@ for c in range(len(iris_data_test.columns) - 1):
 
 k = 5
 k = int(input("Enter k: "))
+print("Processing")
 iris_data_training['distance'] = 0
 iris_data_test['guess'] = ""
 for index, row in iris_data_test.iterrows():
     for ind, r in iris_data_training.iterrows():
         dist = 0
-        # print(row, r)
         for x in range(len(iris_data_test.columns) - 2):
             dist += (r[x] - row[x])**2
         dist = math.sqrt(dist)
         r['distance'] = dist
-        # print(row)
         iris_data_training.iloc[ind] = r
-        # break
-        # compute distance and add to col guess in training df
-    # print(iris_data_training.sort_values('distance').head(k)['distance'])
-    # print(tmp[len(iris_data_training.columns)-2])
     row['guess'] = count_most_freq_type(iris_data_training.sort_values('distance').head(k))
-    # print(row)
     iris_data_test.iloc[index] = row
-    # print(row)
-    # make a decision and store
-    # break
 print(iris_data_test)
-# take every row from test and calculate the difference to all cases in training set, take top k smallest differences
-# and select the most occurring one as the type
-# calculate % of correct predictions and display model accuracy
-
-# print(iris_data_training.head())
-# print(iris_data_test.head())
