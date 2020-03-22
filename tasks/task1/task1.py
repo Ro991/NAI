@@ -35,6 +35,7 @@ def predict(training, test):
         r['distance'] = dist
         training.iloc[ind] = r
 
+    # print(training.sort_values('distance').head(10))
     return count_most_freq_type(training.sort_values('distance').head(k))
 
 
@@ -55,20 +56,25 @@ for c in range(len(iris_data_test.columns) - 1):
         else iris_data_test[c].max()
     min_vals.insert(c, min_val)
     max_vals.insert(c, max_val)
-    iris_data_test[c] = (iris_data_test[c] - min_val) / max_val
-    iris_data_training[c] = (iris_data_training[c] - min_val) / max_val
+    iris_data_test[c] = (iris_data_test[c] - min_val) / (max_val - min_val)
+    iris_data_training[c] = (iris_data_training[c] - min_val) / (max_val - min_val)
 
 k = 5
 k = int(input("Enter k: "))
 print("Processing")
 iris_data_training['distance'] = 0
 iris_data_test['guess'] = ""
+# print(iris_data_test.iloc[26])
+# predict(iris_data_training, iris_data_test.iloc[26])
+
 for index, row in iris_data_test.iterrows():
     row['guess'] = predict(iris_data_training, row)
     iris_data_test.iloc[index] = row
 total_correct = count_correct(iris_data_test)
 total_sample = len(iris_data_test.index)
 print(total_correct, "/", total_sample, round((total_correct/total_sample)*100, 2), "%")
+
+# print(iris_data_test)
 
 # allow user to input fresh data
 print("Input ", len(iris_data_test.columns)-2,
