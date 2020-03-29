@@ -45,7 +45,37 @@ training_arr = np.genfromtxt("iris_training.txt", delimiter="    	", converters=
 
 weights = [1] * (len(training_arr[0]) - 1)
 
+mins = []
+maxs = []
+
+for x in range(len(training_arr[0]) - 1):
+    max_tr = [max(i) for i in zip(*training_arr)][x]
+    min_tr = [min(i) for i in zip(*training_arr)][x]
+    min_te = [min(i) for i in zip(*test_arr)][x]
+    max_te = [max(i) for i in zip(*test_arr)][x]
+    maxs.append(max_tr if max_tr >= max_te else max_te)
+    mins.append(min_tr if min_tr <= min_te else min_te)
+
+for row in training_arr:
+    row[:-1] = np.subtract(row[:-1], mins)
+    row[:-1] = np.divide(row[:-1], np.subtract(maxs, mins))
+for row in test_arr:
+    row[:-1] = np.subtract(row[:-1], mins)
+    row[:-1] = np.divide(row[:-1], np.subtract(maxs, mins))
+
 weights = train(training_arr, weights)
 
 print("\nTest set")
 print(accuracy(test_arr, weights))
+
+while 1:
+    val = input("Enter values to check: ")
+    if val == "stop":
+        break
+    val = np.array(val.split(" ")).astype(dtype=np.float)
+    val = np.divide(np.subtract(val, mins), np.subtract(maxs, mins))
+    if predict(val, weights) == 0:
+        print("Setosa")
+    else:
+        print("Not Setosa")
+
