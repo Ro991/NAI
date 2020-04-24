@@ -119,7 +119,7 @@ for lang in data:
         for x in range(len(row)-1):
             row[x] -= mins[x]
             row[x] /= (maxs[x]-mins[x])
-split_data(60)
+split_data(80)
 
 index = 0
 for p in perceptrons:
@@ -145,11 +145,13 @@ print("correct in test set:", correct/len(test_data)*100, "%", "\n")
 
 ROOT = tk.Tk()
 ROOT.withdraw()
-USER_INP = simpledialog.askstring(title="Lang classifier",
-                                  prompt="Enter text in a language")
-letter_count = collections.Counter(re.findall(r'[qwertyuiopasdfghjklzxcvbnm]', USER_INP.lower()))
-letter_freq = sorted([(letter, letter_count[letter]) for letter in latin_letters], key=lambda t: t[0])
-arr = ([x[1] for x in letter_freq])
-for p in perceptrons:
-    if p.predict(arr) == 1:
-        print(p.language, "")
+while True:
+    USER_INP = simpledialog.askstring(title="Lang classifier",
+                                      prompt="Enter text in a language")
+    letter_count = collections.Counter(re.findall(r'[qwertyuiopasdfghjklzxcvbnm]', USER_INP.lower()))
+    letter_freq = sorted([(letter, letter_count[letter]) for letter in latin_letters], key=lambda t: t[0])
+    arr = ([x[1] for x in letter_freq])
+    for p in perceptrons:
+        # print(p.language, p.predict(arr))
+        if p.predict(arr) == 1:
+            print(p.language, "")
