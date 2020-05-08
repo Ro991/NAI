@@ -122,7 +122,7 @@ training_arr = np.array(training_arr)
 k = int(input("input some k\n"))
 
 size = len(training_arr)
-kmeans = KMeans(3)
+kmeans = KMeans(k)
 pred = kmeans.predict(training_arr[:][:-1])
 print(pred)
 
