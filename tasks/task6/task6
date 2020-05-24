@@ -1,0 +1,63 @@
+import random
+import re
+import time
+
+
+def powerset(items):
+    p_set = [[]]
+    for item in items:
+        newset = [r + [item] for r in p_set]
+        p_set.extend(newset)
+    return p_set
+
+def knapsack(items, max_weight):
+    knapsack = []
+    b_weight = 0
+    b_value = 0
+    for item_set in powerset(items):
+        set_weight = sum([e[0] for e in item_set])
+        set_value = sum([e[1] for e in item_set])
+        if set_value > b_value and set_weight <= max_weight:
+            b_value = set_value
+            b_weight = set_weight
+            knapsack = item_set
+    return knapsack
+
+start_time = time.time()
+
+k = random.randint(1, 15)
+
+sizes_raw = ""
+vals_raw = ""
+
+with open("knapsack.txt", "r") as a_file:
+    parse = False
+    count = 0
+    for line in a_file:
+        if sizes_raw != "" and vals_raw != "":
+            break
+        stripped_line = line.strip()
+        if parse:
+            if count == 0:
+                sizes_raw = stripped_line
+                count += 1
+            elif count == 1:
+                vals_raw = stripped_line
+                parse = False
+        if "dataset " + str(k) + ":" in stripped_line:
+            parse = True
+
+pattern = "{(.*?)}"
+sizes_raw = re.search(pattern, sizes_raw).group(1).split(",")
+vals_raw = re.search(pattern, vals_raw).group(1).split(",")
+
+sizes_vals = []
+for i in range(len(sizes_raw)):
+    sizes_vals.append([int(sizes_raw[i]), int(vals_raw[i])])
+
+ks = knapsack(sizes_vals, 15)
+print(ks)
+print("knapsack total capacity:", sum(i[0] for i in ks))
+print("knapsack total values:", sum(i[1] for i in ks))
+print("--- %s seconds ---" % round(time.time() - start_time, 2))
+
